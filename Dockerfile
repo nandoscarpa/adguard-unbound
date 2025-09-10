@@ -1,11 +1,14 @@
-FROM adguard/adguardhome:latest
+FROM alpine:latest
 
-# Instala o Unbound
-RUN apt update && apt install -y unbound
+# Instala unbound e curl para pegar AdGuard
+RUN apk add --no-cache unbound curl bash
 
-# Copia o script de entrada
+# Baixa e instala AdGuard Home
+RUN curl -sL https://github.com/AdguardTeam/AdGuardHome/releases/latest/download/AdGuardHome_linux_amd64.tar.gz | tar xz -C /opt/
+
+WORKDIR /opt/AdGuardHome
+
 COPY entrypoint.sh /entrypoint.sh
 RUN chmod +x /entrypoint.sh
 
-# Define o entrypoint
 ENTRYPOINT ["/entrypoint.sh"]
